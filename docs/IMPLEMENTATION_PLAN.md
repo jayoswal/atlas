@@ -284,6 +284,20 @@ API calls, or feature behavior were added, removed, or altered. **Met.**
 repo-wide dependency pin-policy check (`platform-outerloop/scripts/check_pins.py`)
 all pass. Evidence commit: `hrms-web@5163afc`.
 
+- [x] Adopt MUI X Data Grid (Community/free tier only — no Pro props used)
+  for the dashboard's illustrative activity table, with a density switcher,
+  quick filter, and CSV export via `GridToolbar`.
+- [x] Self-host the declared "IBM Plex Sans" typeface (`@fontsource`) — it
+  was previously declared in the theme but never actually loaded.
+- [x] Add a real (non-invert) dark mode: two independently-tuned,
+  AA-contrast palettes plus an AppBar toggle, persisted to `localStorage`.
+- [x] Remove the remaining gradient fill (Login marketing panel) and the
+  oversized sign-in button; tighten card/page padding; fix a stale
+  default-MUI-blue `<meta theme-color>`.
+
+**Exit criterion:** still cosmetic-only. **Met.** Verified the same way as
+above. Evidence commit: `hrms-web@04ea853`.
+
 ## P5 — Cross-repository scenarios
 
 **Repositories:** scenario-specific sets in [`SCENARIOS.md`](./SCENARIOS.md).

@@ -14,7 +14,7 @@ siblings; `atlas` contains documentation only.
 | `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | P4 employee.* consumer + profile endpoint complete |
 | `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | P4 employee.* consumer + profile endpoint complete |
 | `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` | Connected/pushed | P4 employee.* consumer (employee_read sync) complete |
-| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | P4 create-employee wizard + provisioning status complete; enterprise UI revamp (cosmetic-only) complete (`5163afc`) |
+| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | P4 create-employee wizard + provisioning status complete; enterprise UI revamp (cosmetic-only) complete (`5163afc`); MUI X Data Grid (free) + dark mode + self-hosted typeface (`04ea853`) |
 
 All six code repositories are public, use `origin` in the `jayoswal` namespace,
 and track the pushed `main` branch.
