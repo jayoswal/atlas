@@ -5,7 +5,8 @@
 - **Role:** authority for *what* people spend and *how* it is reimbursed; owns money, currency, and FX.
 - **Owns contracts:** `contracts/openapi/expense.v1.yaml`; event schemas `expense.submitted`.
 - **Emits:** `expense.*` on `expense.events`.
-- **Consumes:** `employee.*` (Identity), `expense.approved|rejected` (Workflow).
+- **Consumes (P3/P4):** `employee.*` (Identity),
+  `expense.approved|rejected` (Workflow).
 
 ## 1. Data model (`expense_db`)
 
@@ -15,8 +16,7 @@
 | `expense_lines` | `id`, `report_id`, `category_id`, `amount_minor`, `currency`, `amount_home_minor`, `fx_rate`, `receipt_url`, `spent_on` |
 | `categories` | `id`, `code`, `name`, `active` |
 | `fx_rates` | `rate_date`, `base_currency`, `quote_currency`, `rate` (pk: date+pair) |
-| `expense_profiles` | `employee_id`, `default_currency`, `category_access (jsonb)` |
-| `employee_read` | id, display_name, cost_center, manager_id, status, home_currency — upserted from `employee.*` |
+| `employee_profiles` | `id`, `email`, `full_name`, `manager_id`, `home_currency`, `status`, `roles`, `updated_at` |
 
 `categories` (Scenario 1), `currency`/`amount_home_minor`/`fx_rate`/`fx_rates` (Scenario 4) are expand-only additions.
 
@@ -34,9 +34,10 @@
 | `GET /expense/categories` | any auth | active categories (Scenario 1) |
 | `GET /expense/reports` | self or `FINANCE` | list (page params) |
 | `POST /expense/reports` | `EMPLOYEE` | create draft |
+| `GET/PUT /expense/reports/{id}` | owner; Finance may read | read/update draft |
 | `POST /expense/reports/{id}/lines` | owner | add line (category, amount, currency, receipt_url) |
 | `POST /expense/reports/{id}/submit` | owner | convert FX, publish `expense.submitted` |
-| `GET /expense/profiles/{employee_id}` | self or `HR_ADMIN` | provisioning-ready check (Scenario 5) |
+| `GET /expense/profiles/{employee_id}` | self or `HR_ADMIN` | planned P4 provisioning check |
 
 Error codes (prefix `EXPENSE_`): `EXPENSE_OVER_CAP` (informational flag set by Workflow, echoed), `EXPENSE_UNKNOWN_CURRENCY`, `EXPENSE_NOT_DRAFT`, `EXPENSE_REPORT_NOT_FOUND`, `EXPENSE_CATEGORY_INACTIVE`.
 
@@ -64,19 +65,20 @@ JWT_SECRET=atlas-local-development-secret-32
 ```
 
 - **FX tests:** conversion is deterministic against a seeded `fx_rates` table; same-currency lines yield `fx_rate=1` and `amount_home_minor==amount_minor`.
-- **Contract tests:** `expense.submitted` payload validates across `1-0-0 → 1-1-0 → 1-2-0` (additive) so Workflow's older consumers still parse.
+- **Contract test:** emitted `expense.submitted` payload validates against the
+  `1-2-0` JSON Schema.
 - **Migration test:** Scenario 4 backfill sets `currency=home_currency`, `amount_home_minor=amount_minor` for pre-existing rows before the column becomes required.
 
-## 6. Implementation build order (Phase P2)
+## 6. P2 implementation status
 
 Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 
-1. Instantiate the service template; add the `employee.*` consumer → `employee_read` + `expense_profile` (upsert).
-2. Author `expense.v1.yaml` + `expense.submitted` schema → merge.
-3. Models/migrations: `expense_reports`, `expense_lines`, `expense_profiles`. (Add `categories`, `fx_rates`, currency columns in the S1/S4 phases, expand-only.)
-4. Report/line CRUD with a `receipt_url` field.
-5. Submit → FX conversion → `publish("expense.submitted", …)`.
-6. Consume `expense.approved/rejected` → set status (`APPROVED`→`REIMBURSED` / `REJECTED`).
-7. Tests to DoD; image.
+Implemented in `svc-expense@037d9b8`: contract-backed report CRUD, line entry,
+categories, signed-64-bit minor-unit money, deterministic dated FX conversion,
+serialized draft mutations, insert-only local fixtures, and persistent
+`expense.submitted` publication. The P3 approval consumer and P4
+employee-event synchronization remain deliberately deferred.
 
-**Definition of done:** employee submits an expense with a receipt link; money stored as minor units + currency; FX deterministic against seeded rates; approval transitions driven by Workflow events.
+**P2 definition of done:** an employee submits an expense with an optional
+receipt link; money is stored as minor units plus currency; FX is deterministic
+against seeded rates; the submitted event carries the exact home-currency total.

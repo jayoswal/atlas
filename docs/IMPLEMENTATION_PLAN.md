@@ -146,17 +146,30 @@ Evidence commits: `platform-outerloop@8fffead`, `svc-identity@da3ed15`,
 
 **Repositories:** `platform-outerloop`, `svc-time`, `svc-expense`, `hrms-web`.
 
-- [ ] Merge time/expense OpenAPI and submitted-event schemas first.
-- [ ] Add expand-only models/migrations for timesheets, entries, expense reports,
+- [x] Merge time/expense OpenAPI and submitted-event schemas first.
+- [x] Add expand-only models/migrations for timesheets, entries, expense reports,
   line items, categories, and employee read models.
-- [ ] Implement create/list/update/submit APIs and validation rules.
-- [ ] Publish `timesheet.submitted` and `expense.submitted` after commit.
-- [ ] Add employee timesheet and expense screens using generated clients.
-- [ ] Add unit, API, contract, and UI tests.
-- [ ] Extend seed/smoke to submit one timesheet and expense.
+- [x] Implement create/list/update/submit APIs and validation rules.
+- [x] Publish `timesheet.submitted` and `expense.submitted` after commit.
+- [x] Add employee timesheet and expense screens using generated clients.
+- [x] Add unit, API, contract, and UI tests.
+- [x] Extend seed/smoke to submit one timesheet and expense.
 
 **Exit criterion:** an employee submits both records through the UI/API and both
 events are visible in RabbitMQ.
+
+**Completed 2026-09-06:** Time and Expense contracts, migrations, APIs,
+deterministic insert-only seeds, generated clients, and employee workspaces are
+implemented. The integration smoke creates and submits a 50-hour timesheet
+(10 overtime hours) and a multi-currency expense, then observes both persistent
+submitted events through a temporary RabbitMQ queue. Time Ruff, strict mypy,
+and 25 tests pass; Expense Ruff, strict mypy, and 18 tests pass; web ESLint,
+six UI tests, generated-client drift, TypeScript/Vite build, and production
+dependency audit pass. Clean no-cache application builds, repeatable seed/smoke,
+all ten running containers, and both SPA routes were verified. Evidence commits:
+`platform-outerloop@47d11a8`, `svc-time@0189c95`,
+`svc-expense@037d9b8`, `hrms-web@11dcc11`,
+`svc-identity@141b9a6`, and `svc-workflow@666833c`.
 
 ## P3 — Workflow, approvals, and notifications
 

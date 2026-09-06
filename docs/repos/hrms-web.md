@@ -194,6 +194,16 @@ npm run gen:api      # openapi-typescript contracts/openapi/*.yaml -> src/api/ge
 
 Each list uses `DataTable`; each detail uses `DetailDrawer` or a full detail route; each create/edit uses `FormDialog`. All four §3.7 states are required.
 
+### P2 delivered surface
+
+`hrms-web@11dcc11` delivers authenticated `/time` and `/expenses` workspaces
+using generated Time and Expense OpenAPI types plus RTK Query. Employees can
+create, edit, and submit timesheets and expense reports, add up to seven
+timesheet entries, view PTO balance, add categorized multi-currency expense
+lines with receipt links, and see loading/error/empty states. The richer shared
+table/drawer design system and separate detail routes remain incremental UI
+work rather than prerequisites for the P2 domain exit criterion.
+
 ---
 
 ## 8. Development guide (how to build it)

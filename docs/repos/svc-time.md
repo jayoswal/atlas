@@ -5,7 +5,8 @@
 - **Role:** authority for *when* people work and take leave; owns overtime and PTO accrual math.
 - **Owns contracts:** `contracts/openapi/time.v1.yaml`; event schemas `timesheet.submitted`.
 - **Emits:** `timesheet.*` on `time.events`.
-- **Consumes:** `employee.*` (Identity), `timesheet.approved|rejected` (Workflow).
+- **Consumes (P3/P4):** `employee.*` (Identity),
+  `timesheet.approved|rejected` (Workflow).
 - **Read model:** `employee_read` (id, display_name, cost_center, manager_id, status, pto_entitlement_days).
 
 ## 1. Data model (`time_db`)
@@ -14,11 +15,11 @@
 |---|---|
 | `timesheets` | `id`, `employee_id`, `period_start`, `period_end`, `status (DRAFT\|PENDING_APPROVAL\|APPROVED\|REJECTED)`, `overtime_hours (numeric)`, `created_at`, `updated_at` |
 | `time_entries` | `id`, `timesheet_id`, `work_date`, `hours`, `project_code`, `note` |
-| `pto_requests` | `id`, `employee_id`, `start_date`, `end_date`, `days`, `status`, `created_at` |
-| `pto_ledger` | `id`, `employee_id`, `entry_type (ACCRUAL\|TAKEN\|ADJUSTMENT)`, `days`, `effective_date` |
-| `employee_read` | `id`, `display_name`, `cost_center`, `manager_id`, `status`, `pto_entitlement_days` — upserted from `employee.*` |
+| `employee_read` | `id`, `manager_id`, `status`, `pto_entitlement_days`, `roles`, timestamps |
 
-`overtime_hours` (Scenario 2) and PTO tables (Scenario 3) are expand-only additions.
+`pto_requests` and `pto_ledger` are later expand-only additions. Until P4 event
+fan-out, the deterministic local seed supplies the employee projection; signed
+JWT claims remain authoritative for P2 authorization.
 
 ## 2. Domain rules
 
@@ -35,7 +36,7 @@
 | `GET/PUT /time/timesheets/{id}` | owner | read/update draft |
 | `POST /time/timesheets/{id}/submit` | owner | validate, compute overtime, emit `timesheet.submitted` |
 | `GET /time/pto/balance` | self or `MANAGER` | composed PTO balance (Scenario 3) |
-| `POST /time/pto/requests` | `EMPLOYEE` | request leave |
+| `POST /time/pto/requests` | `EMPLOYEE` | planned PTO workflow |
 
 Error codes (prefix `TIME_`): `TIME_OVERLAPPING_ENTRY`, `TIME_NOT_DRAFT`, `TIME_TIMESHEET_NOT_FOUND`, `TIME_INSUFFICIENT_PTO`.
 
@@ -63,16 +64,15 @@ STANDARD_WEEK_HOURS=40
 - **Contract test:** emitted `timesheet.submitted` validates against its JSON Schema; a replayed `employee.created` is a no-op (upsert by `employee_id`).
 - **Scenario 3 test:** balance endpoint returns entitlement-based number even when `employee_read.pto_entitlement_days` is null (defaults 0) — proves tolerance of not-yet-arrived events.
 
-## 6. Implementation build order (Phase P2)
+## 6. P2 implementation status
 
 Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 
-1. Instantiate the service template; add the `employee.*` consumer → `employee_read` (upsert by id).
-2. Author `time.v1.yaml` + `timesheet.submitted` schema → merge in registry.
-3. Models/migrations: `timesheets`, `time_entries`, `pto_requests`, `pto_ledger`.
-4. Timesheet CRUD + overlap guard; submit → compute `overtime_hours` → `publish("timesheet.submitted", …)`.
-5. Consume `timesheet.approved/rejected` (from Workflow) → finalize state.
-6. PTO accrual ledger + `GET /time/pto/balance` (composition from read model).
-7. Tests to DoD; image.
+Implemented in `svc-time@0189c95`: contract-backed timesheet CRUD, seven-entry
+and overlap guards, serialized draft mutations, configurable overtime,
+PTO-balance composition, deterministic insert-only projection seed, and
+persistent `timesheet.submitted` publication. The P3 approval consumer and P4
+employee-event synchronization remain deliberately deferred.
 
-**Definition of done:** employee submits a timesheet; overtime computed and emitted; approval decision from Workflow finalizes state; PTO balance correct and resilient to missing entitlement events.
+**P2 definition of done:** an employee submits a timesheet; overtime is
+computed and emitted; PTO balance remains resilient to a missing projection.

@@ -121,8 +121,10 @@ Deterministic fixtures so the estate is demo-ready and the smoke test is stable.
 | `ada@atlas.dev` | `atlas` | EMPLOYEE | grace | smoke test and employee workflows |
 
 P1 seeds identity-owned users, roles, credentials, and their cost-center values.
-Time, expense, and workflow fixtures are added with their owning phases.
-Seeding upserts by natural key, so it is safe to re-run.
+P2 seeds Time employee projections plus Expense employee profiles, categories,
+and FX rates. Workflow fixtures arrive with P3. Each service owns its seed and
+inserts missing natural keys without overwriting existing domain state, so the
+platform seed is safe to re-run.
 
 ## 3. API Gateway (Traefik) — routing only
 
