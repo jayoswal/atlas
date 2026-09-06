@@ -17,7 +17,7 @@ platform-outerloop/
     .env.example                  # one config file (copy to .env)
   contracts/                      # THE registry (contract-first)
     openapi/{identity,time,expense,workflow}.v1.yaml
-    events/{employee.created,timesheet.submitted,expense.submitted,...}.json
+    schemas/{employee.created,timesheet.submitted,expense.submitted,...}/
   ci/
     service.yml                   # reusable: lint + test + build image (each backend)
     web.yml                       # reusable: lint + typecheck + gen:api drift + build
@@ -63,7 +63,7 @@ RABBITMQ_USER=atlas
 RABBITMQ_PASSWORD=atlas
 
 # Auth — one shared HS256 secret, verified in-process by every service
-JWT_SECRET=atlas-dev-secret
+JWT_SECRET=atlas-local-development-secret-32
 JWT_TTL_HOURS=8
 
 SMTP_HOST=mailhog
@@ -115,13 +115,14 @@ Deterministic fixtures so the estate is demo-ready and the smoke test is stable.
 
 | Email | Password | Role | Reports to | Used in |
 |---|---|---|---|---|
-| `hana@atlas.dev` | `atlas` | HR_ADMIN | — | creates employees (S5), sets policies |
-| `mia@atlas.dev` | `atlas` | MANAGER | hana | approves S1/S2 |
-| `fred@atlas.dev` | `atlas` | FINANCE | hana | finance approvals, categories |
-| `ada@atlas.dev` | `atlas` | EMPLOYEE | mia | submits timesheets/expenses |
-| `grace@atlas.dev` | `atlas` | EMPLOYEE | mia | multi-currency (S4) |
+| `admin@atlas.dev` | `atlas` | EMPLOYEE, HR_ADMIN | — | manages employees |
+| `grace@atlas.dev` | `atlas` | EMPLOYEE, MANAGER | — | manages Ada |
+| `finance@atlas.dev` | `atlas` | EMPLOYEE, FINANCE | — | finance workflows |
+| `ada@atlas.dev` | `atlas` | EMPLOYEE | grace | smoke test and employee workflows |
 
-Also seeded: cost centers `CC-100/CC-200`; categories `TRAVEL`, `MEALS`, `CLIENT_ENT` (with a €150 `PER_RECEIPT_CAP` policy); an `OVERTIME_THRESHOLD=10h` policy (inactive by default, so S2 can be "switched on" in a lesson); a few `EUR/USD`, `INR/USD`, `GBP/USD` FX rates; default approval chain `[{type:MANAGER}]`. Seeding upserts by natural key, so it is safe to re-run.
+P1 seeds identity-owned users, roles, credentials, and their cost-center values.
+Time, expense, and workflow fixtures are added with their owning phases.
+Seeding upserts by natural key, so it is safe to re-run.
 
 ## 3. API Gateway (Traefik) — routing only
 

@@ -53,7 +53,8 @@ All transitive packages and integrity hashes are fixed by
 | @emotion/react | 11.14.0 | @emotion/styled | 11.14.1 |
 | @mui/material | 5.18.0 | @reduxjs/toolkit | 2.12.0 |
 | react | 18.3.1 | react-dom | 18.3.1 |
-| react-redux | 9.3.0 | @eslint/js | 9.39.5 |
+| react-redux | 9.3.0 | react-router-dom | 7.18.3 |
+| @eslint/js | 9.39.5 | openapi-typescript | 7.13.0 |
 | @testing-library/jest-dom | 6.9.1 | @testing-library/react | 16.3.3 |
 | @types/react | 18.3.31 | @types/react-dom | 18.3.7 |
 | @vitejs/plugin-react | 4.7.0 | eslint | 9.39.5 |

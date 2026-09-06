@@ -24,10 +24,10 @@
 | UI kit | MUI (Material UI) with a **fully custom theme** | 5.16 |
 | Data grid | MUI X Data Grid (Pro-parity features via community where possible) | 7.x |
 | Forms | React Hook Form + Zod resolver | latest |
-| Routing | React Router | 6.x |
+| Routing | React Router | 7.18.3 |
 | Charts | Recharts (loaded from CDN in prod build) | 2.x |
 | i18n / dates | `react-i18next` + `date-fns` + `Intl` | latest |
-| API types | `openapi-typescript` → generated client | latest |
+| API types | `openapi-typescript` → generated client | 7.13.0 |
 | Testing | Vitest + React Testing Library; Playwright (E2E); axe-core (a11y) | latest |
 | Lint/format | ESLint (typescript-eslint, jsx-a11y), Prettier | latest |
 
@@ -176,13 +176,14 @@ npm run gen:api      # openapi-typescript contracts/openapi/*.yaml -> src/api/ge
 - Login → one `token` held in memory (Redux) + mirrored to `localStorage` so a refresh survives (fine for a local teaching app; no refresh-token dance).
 - `baseApi` injects `Authorization: Bearer <token>` and a generated `X-Correlation-Id`.
 - On `401` → clear token, redirect to `/login` (re-login *is* the refresh story).
-- `RequireRole` gates routes from the decoded `roles` claim; the server still enforces RBAC (the guard is UX only).
+- Route guards use decoded `roles` claims; the server still enforces RBAC (the
+  guard is UX only).
 
 ## 7. Screen specifications
 
 | Screen | Route | Primary calls | Scenario |
 |---|---|---|---|
-| Login | `/login` | `POST /auth/login`, `/auth/refresh` | — |
+| Login | `/login` | `POST /auth/login`, `GET /identity/me` | — |
 | My Timesheets | `/time` | `GET /time/timesheets`, `GET /time/pto/balance` | 3 |
 | Timesheet editor | `/time/:id` | `GET/PUT /time/timesheets/:id`, `POST …/submit` | 2, 3 |
 | Expense reports | `/expenses` | `GET /expense/reports` | — |

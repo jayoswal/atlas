@@ -58,7 +58,7 @@ Shape per [`svc-identity.md`](./svc-identity.md) §5–§8. Differences:
 ```
 DATABASE_URL=postgresql+psycopg://atlas:atlas@postgres:5432/expense_db
 AMQP_URL=amqp://atlas:atlas@rabbitmq:5672/
-JWT_SECRET=atlas-dev-secret
+JWT_SECRET=atlas-local-development-secret-32
 # FX rates are seeded locally; no external provider
 # run: uv run uvicorn app.main:app --port 8003 --reload
 ```

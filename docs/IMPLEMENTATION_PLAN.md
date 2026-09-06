@@ -121,16 +121,26 @@ policy workflow `34035100310` passes. Evidence commits:
 
 **Repositories:** `platform-outerloop`, `svc-identity`, `hrms-web`.
 
-- [ ] Finalize `identity.v1.yaml` login, employee, and role contracts.
-- [ ] Add employee/cost-center schema and expand-only migration.
-- [ ] Implement Argon2 login and eight-hour HS256 token issuance.
-- [ ] Implement shared error envelope, correlation ID, RBAC, and ownership checks.
-- [ ] Seed demo users/roles and add identity contract/API tests.
-- [ ] Generate the web API client; add login and protected app shell.
-- [ ] Extend smoke test: login then authorized request.
+- [x] Finalize `identity.v1.yaml` login, employee, and role contracts.
+- [x] Add employee/cost-center schema and expand-only migration.
+- [x] Implement Argon2 login and eight-hour HS256 token issuance.
+- [x] Implement shared error envelope, correlation ID, RBAC, and ownership checks.
+- [x] Seed demo users/roles and add identity contract/API tests.
+- [x] Generate the web API client; add login and protected app shell.
+- [x] Extend smoke test: login then authorized request.
 
 **Exit criterion:** demo login returns a valid token and one protected request
 succeeds through Traefik; lint, strict types, tests, and builds pass.
+
+**Completed 2026-09-06:** identity migration and idempotent demo seed pass
+against PostgreSQL; login, `/identity/me`, HR directory access, SPA fallback,
+and API 404 behavior pass through Traefik. Backend Ruff, strict mypy, and 15
+API/auth tests pass; frontend ESLint, three UI tests, generated-client drift,
+TypeScript/Vite build, and production dependency audit pass. Clean no-cache
+identity/web image builds and all ten running containers were verified.
+Evidence commits: `platform-outerloop@8fffead`, `svc-identity@da3ed15`,
+`hrms-web@84fc7c0`, `svc-time@ff0e0de`, `svc-expense@178cac9`, and
+`svc-workflow@b3d813b`.
 
 ## P2 — Core time and expense domains
 

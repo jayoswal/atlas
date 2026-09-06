@@ -8,13 +8,13 @@ siblings; `atlas` contains documentation only.
 
 | Repository | Purpose | Local path | GitHub remote | Git | Current phase/status |
 |---|---|---|---|---|---|
-| `atlas` | Architecture/specification center | `/home/oswa/atlas` | `https://github.com/jayoswal/atlas` (connected) | Existing | Active; plan/tracker added |
-| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0/P0.1 complete; P1 support next |
-| `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` | Connected/pushed | P0.1 pinned; P1 next |
-| `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | P0.1 pinned; P2 pending |
-| `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | P0.1 pinned; P2 pending |
-| `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` | Connected/pushed | P0.1 pinned; P3 pending |
-| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | P0.1 pinned; P1 next |
+| `atlas` | Architecture/specification center | `/home/oswa/atlas` | `https://github.com/jayoswal/atlas` (connected) | Existing | P1 documented; P2 next |
+| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P1 contracts/integration complete |
+| `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` | Connected/pushed | P1 complete |
+| `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | P1 shared auth config; P2 next |
+| `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | P1 shared auth config; P2 next |
+| `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` | Connected/pushed | P1 shared auth config; P3 pending |
+| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | P1 login/shell complete; P2 next |
 
 All six code repositories are public, use `origin` in the `jayoswal` namespace,
 and track the pushed `main` branch.

@@ -178,7 +178,7 @@ There is **one** environment to configure: local, via `compose/.env`. Every valu
 |---|---|---|
 | `DATABASE_URL` | `postgresql+psycopg://atlas:atlas@postgres:5432/<db>` | managed Postgres, secret |
 | `AMQP_URL` | `amqp://atlas:atlas@rabbitmq:5672/` | managed broker, secret |
-| `JWT_SECRET` | `atlas-dev-secret` (shared HS256) | real secret; RS256 + JWKS at the edge |
+| `JWT_SECRET` | `atlas-local-development-secret-32` (shared HS256) | real secret; RS256 + JWKS at the edge |
 | `SMTP_HOST` | `mailhog` | real SMTP relay |
 
 The same container images are the unit of deploy everywhere — that independence is the enterprise lesson; only these values would change.

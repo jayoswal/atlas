@@ -4,7 +4,7 @@
 
 - **Role:** the authority for *who* someone is and *what they may do*. Issues the login JWT.
 - **Owns contracts:** `contracts/openapi/identity.v1.yaml`; event schemas `employee.created|updated|deactivated`.
-- **Emits:** `employee.*` on exchange `identity.events`.
+- **Emits (P4):** `employee.*` on exchange `identity.events`.
 - **Consumes:** none.
 - **Downstream consumers:** `svc-time`, `svc-expense`, `svc-workflow` (read models), `hrms-web`.
 
@@ -47,10 +47,10 @@ No refresh-token or outbox tables. `home_currency` and `pto_entitlement_days` ar
 |---|---|---|
 | `POST /auth/login` | public | email+password → `{ token }` (HS256, ~8h) |
 | `GET /identity/employees` | `MANAGER\|HR_ADMIN` | list (page params) |
-| `POST /identity/employees` | `HR_ADMIN` | create employee → publishes `employee.created` |
+| `POST /identity/employees` | `HR_ADMIN` | create employee |
 | `GET /identity/employees/{id}` | self or `MANAGER\|HR_ADMIN` | fetch one |
-| `PATCH /identity/employees/{id}` | `HR_ADMIN` | update → publishes `employee.updated` |
-| `POST /identity/employees/{id}/deactivate` | `HR_ADMIN` | → publishes `employee.deactivated` |
+| `PATCH /identity/employees/{id}` | `HR_ADMIN` | update employee |
+| `POST /identity/employees/{id}/deactivate` | `HR_ADMIN` | deactivate employee |
 
 No JWKS / verify / token endpoints — every service verifies the HS256 token itself with the shared `JWT_SECRET`. Error codes (prefix `IDENTITY_`): `IDENTITY_INVALID_CREDENTIALS`, `IDENTITY_EMAIL_TAKEN`, `IDENTITY_EMPLOYEE_NOT_FOUND`, `IDENTITY_FORBIDDEN`.
 
@@ -62,7 +62,11 @@ No JWKS / verify / token endpoints — every service verifies the HS256 token it
 | `employee.updated` | `employee.updated` | id + changed fields | time, expense, workflow |
 | `employee.deactivated` | `employee.deactivated` | id | time, expense, workflow |
 
-Publishing is simple: the handler commits the DB change, then calls `publish("employee.created", {...})`. Consumers upsert by `employee_id`, so a duplicate delivery is harmless (payloads in [`../DATA_CONTRACTS.md §3`](../DATA_CONTRACTS.md#3-event-payloads-data-field-of-the-cloudevents-envelope)).
+Publication is intentionally deferred to P4, after downstream consumers bind.
+Publishing remains simple: the handler commits the DB change, then calls
+`publish("employee.created", {...})`. Consumers upsert by `employee_id`, so a
+duplicate delivery is harmless (payloads in
+[`../DATA_CONTRACTS.md §3`](../DATA_CONTRACTS.md#3-event-payloads-data-field-of-the-cloudevents-envelope)).
 
 ## 5. Config (`.env.example`)
 
@@ -71,7 +75,7 @@ Local values come from `platform-outerloop/compose/.env` (all `atlas`); this fil
 ```
 DATABASE_URL=postgresql+psycopg://atlas:atlas@postgres:5432/identity_db
 AMQP_URL=amqp://atlas:atlas@rabbitmq:5672/
-JWT_SECRET=atlas-dev-secret        # shared by all services (HS256)
+JWT_SECRET=atlas-local-development-secret-32 # shared by all services (HS256)
 JWT_TTL_HOURS=8
 DEMO_PASSWORD=atlas                # used only by the seed script
 LOG_LEVEL=INFO
@@ -108,7 +112,10 @@ Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 3. Models + migrations: `employees`, `roles`, `employee_roles`, `credentials`.
 4. Auth: argon2 password hashing + HS256 login token; the shared verify/RBAC dependency.
 5. Employee CRUD + RBAC.
-6. `publish` `employee.created/updated/deactivated` after commit; contract-test payloads.
+6. Contract-test the future `employee.created/updated/deactivated` envelopes;
+   activate publication in P4 after consumers bind.
 7. Tests; publish image.
 
-**Definition of done:** login returns a token that another service accepts; creating an employee publishes exactly one `employee.created`; `mypy --strict` + contract drift checks green.
+**Definition of done:** login returns a token that another service accepts; one
+protected identity request succeeds through the gateway; `mypy --strict` and
+contract drift checks are green.
