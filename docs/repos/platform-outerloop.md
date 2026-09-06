@@ -172,3 +172,21 @@ Atlas is intentionally the *left* side of every arrow. The value of the exercise
 - All five dashboards in §2.3 reachable; you can watch a submitted expense appear in the RabbitMQ UI and its approval email in MailHog.
 - `ci/contracts.yml` blocks a breaking contract change; `ci/integration.yml` runs the [`../SCENARIOS.md`](../SCENARIOS.md) suite.
 - One `compose/.env` is the only configuration a new developer edits.
+
+## 8. Implementation notes (as-built, P4)
+
+The `employee.created/updated/deactivated` AsyncAPI channels/operations and
+JSON Schemas were merged in an earlier phase; P4 only needed two OpenAPI
+additions: `GET /api/v1/time/profiles/{employee_id}` (`time.v1.yaml`) and
+`GET /api/v1/expense/profiles/{employee_id}` (`expense.v1.yaml`), each with a
+`Profile` schema (`employee_id`, `status`, `manager_id`, plus a
+service-specific field — `pto_entitlement_days` for Time,
+`home_currency` for Expense). `scripts/smoke.py` was extended to log in as
+`admin@atlas.dev` (HR_ADMIN), create one employee, verify the Time/Expense
+profiles and the Workflow `employee_read` row all appear, verify a profile
+re-read is unchanged (upsert-by-PK idempotency), and verify
+`employee.deactivated` syncs `employee_read.status` to `INACTIVE`. Evidence:
+`platform-outerloop@68bf951`; the extended smoke test passed twice
+consecutively and again after a clean-cache rebuild of `svc-identity`,
+`svc-time`, `svc-expense`, `svc-workflow`, and `hrms-web`; `check_pins.py`
+remains green.

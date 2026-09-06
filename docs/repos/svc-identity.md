@@ -119,3 +119,16 @@ Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 **Definition of done:** login returns a token that another service accepts; one
 protected identity request succeeds through the gateway; `mypy --strict` and
 contract drift checks are green.
+
+## 10. Implementation notes (as-built, P4)
+
+Step 6 above ("activate publication in P4 after consumers bind") is now done:
+`create_employee`/`update_employee`/`deactivate_employee` are async and
+`publish()` to the `identity.events` exchange (routing keys
+`employee.created`/`employee.updated`/`employee.deactivated`) after their
+respective commit, carrying the request's correlation id. The
+`employee.updated` payload's `changed` diff is built from
+`payload.model_dump(exclude_unset=True)` plus the derived
+`pto_entitlement_days` when `grade` changes, passed through a new
+`serialize_change()` helper so UUID/list values are JSON-safe. Evidence:
+`svc-identity@14648e8`, Ruff/strict-mypy (21 files)/pytest (19/19) green.

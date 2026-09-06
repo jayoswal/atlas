@@ -71,8 +71,19 @@ Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 Implemented in `svc-time@0189c95`: contract-backed timesheet CRUD, seven-entry
 and overlap guards, serialized draft mutations, configurable overtime,
 PTO-balance composition, deterministic insert-only projection seed, and
-persistent `timesheet.submitted` publication. The P3 approval consumer and P4
-employee-event synchronization remain deliberately deferred.
+persistent `timesheet.submitted` publication.
 
 **P2 definition of done:** an employee submits a timesheet; overtime is
 computed and emitted; PTO balance remains resilient to a missing projection.
+
+## 7. P3/P4 implementation status
+
+The P3 `timesheet.approved`/`timesheet.rejected` decision consumer
+(`svc-time@277be72`) finalizes timesheet status idempotently. P4
+(`svc-time@2776761`) added the `employee.*` consumer: one
+`time.employee-events` queue bound to `employee.created`/`updated`/
+`deactivated` on the `identity.events` exchange, upserting the `employee_read`
+projection by primary key, plus `GET /api/v1/time/profiles/{employee_id}`
+(HR_ADMIN-gated, 404 `TIME_PROFILE_NOT_FOUND` until provisioned) so the
+`hrms-web` create-employee wizard can poll provisioning status. Ruff, strict
+mypy (20 files), and pytest (36/36) pass.

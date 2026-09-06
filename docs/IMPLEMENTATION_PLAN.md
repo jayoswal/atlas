@@ -214,15 +214,46 @@ consecutively, and again after clean-cache rebuilds of `svc-workflow`,
 
 **Repositories:** all six.
 
-- [ ] Merge `employee.created/updated/deactivated` schemas first.
-- [ ] Deploy/bind idempotent consumers in time, expense, and workflow.
-- [ ] Publish identity events only after consumers are ready.
-- [ ] Auto-create time/expense profiles, accruals, and approval chain.
-- [ ] Add create-employee wizard and provisioning status.
-- [ ] Extend smoke test for one new hire across all read models.
+- [x] Merge `employee.created/updated/deactivated` schemas first. (The
+  AsyncAPI channels/operations/messages and the three JSON Schemas were
+  already merged in an earlier phase; only the two OpenAPI contracts needed
+  a new `/profiles/{employee_id}` path this phase — see below.)
+- [x] Deploy/bind idempotent consumers in time, expense, and workflow. Each
+  service binds one queue (`time.employee-events`, `expense.employee-events`,
+  `workflow.employee-events`) to all three `employee.*` routing keys on the
+  `identity.events` exchange, dispatching by `event["type"]`; consumers
+  upsert their read-model **by primary key** (`db.get(Model, employee_id,
+  with_for_update=True)`), which is naturally idempotent — no separate
+  dedup table needed, unlike the P3 approval-decision idempotency pattern.
+- [x] Publish identity events only after consumers are ready. (Conceptual
+  deploy-order note only: RabbitMQ's durable queues buffer messages, and the
+  current `docker compose up` starts every service together, so this is a
+  documentation guarantee rather than an operational requirement locally.)
+- [x] Auto-create time/expense profiles, accruals, and approval chain. Time
+  and Expense each expose a new `GET /api/v1/{time,expense}/profiles/{id}`
+  read endpoint (HR_ADMIN-gated) so the wizard can poll provisioning status;
+  Workflow only needs its `employee_read` projection current for approval
+  routing/notification, so it exposes no new endpoint this phase.
+- [x] Add create-employee wizard and provisioning status. `hrms-web` gained
+  `/employees` (HR_ADMIN-gated, replacing the disabled P3 nav placeholder):
+  a create-employee form plus a status panel that polls the Time and Expense
+  profile endpoints until both resolve.
+- [x] Extend smoke test for one new hire across all read models.
+  `scripts/smoke.py` now logs in as `admin@atlas.dev` (HR_ADMIN), creates one
+  employee, waits for the Time and Expense profiles to appear, waits for the
+  Workflow `employee_read` row to sync, re-reads the Time profile to confirm
+  the upsert-by-PK consumer is idempotent, then deactivates the employee and
+  confirms `employee_read.status` follows to `INACTIVE`.
 
 **Exit criterion:** creating one employee automatically creates all three
-downstream profiles exactly once, including after redelivery.
+downstream profiles exactly once, including after redelivery. **Met.** All
+four backend services (Ruff, strict mypy, pytest) and the web app (ESLint,
+`tsc -b`, Vitest, Vite build) pass; the extended smoke test above passed
+twice consecutively, and again after a clean-cache rebuild of
+`svc-identity`, `svc-time`, `svc-expense`, `svc-workflow`, and `hrms-web`.
+Evidence commits: `platform-outerloop@68bf951`, `svc-identity@14648e8`,
+`svc-time@2776761`, `svc-expense@77a937e`, `svc-workflow@1671a82`, and
+`hrms-web@b81a195`.
 
 ## P5 — Cross-repository scenarios
 

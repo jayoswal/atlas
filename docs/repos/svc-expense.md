@@ -76,9 +76,21 @@ Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 Implemented in `svc-expense@037d9b8`: contract-backed report CRUD, line entry,
 categories, signed-64-bit minor-unit money, deterministic dated FX conversion,
 serialized draft mutations, insert-only local fixtures, and persistent
-`expense.submitted` publication. The P3 approval consumer and P4
-employee-event synchronization remain deliberately deferred.
+`expense.submitted` publication.
 
 **P2 definition of done:** an employee submits an expense with an optional
 receipt link; money is stored as minor units plus currency; FX is deterministic
 against seeded rates; the submitted event carries the exact home-currency total.
+
+## 7. P3/P4 implementation status
+
+The P3 `expense.approved`/`expense.rejected` decision consumer
+(`svc-expense@d2ce3c8`) finalizes report status idempotently, collapsing
+`APPROVED` straight to `REIMBURSED` (no separate payment step exists). P4
+(`svc-expense@77a937e`) added the `employee.*` consumer: one
+`expense.employee-events` queue bound to `employee.created`/`updated`/
+`deactivated` on the `identity.events` exchange, upserting `EmployeeProfile`
+by primary key, plus `GET /api/v1/expense/profiles/{employee_id}`
+(HR_ADMIN-gated, 404 `EXPENSE_PROFILE_NOT_FOUND` until provisioned) so the
+`hrms-web` create-employee wizard can poll provisioning status. Ruff, strict
+mypy (23 files), and pytest (29/29) pass.

@@ -114,3 +114,15 @@ Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
   own `APPROVED` status straight to `REIMBURSED` on finalize (no separate
   payment step exists yet); `svc-workflow` only ever publishes `APPROVED` or
   `REJECTED` — the collapse happens entirely in the expense consumer.
+
+## 9. Implementation notes (as-built, P4)
+
+The `employee.*` consumer referenced in §7 step 1 was scaffolded early but
+left un-bound until P4. It now binds one `workflow.employee-events` queue on
+the `identity.events` exchange to all three routing keys
+(`employee.created`/`updated`/`deactivated`), dispatching to per-type handlers
+that upsert `employee_read` by primary key (insert if absent, else update the
+4 synced fields: `email`, `full_name`, `manager_id`, `status`). No new API
+endpoint was added — unlike Time/Expense, Workflow only needs its own
+`employee_read` projection current for approval routing/notification and has
+no wizard-facing "profile ready" concept to expose. Evidence: `svc-workflow@1671a82`, Ruff/strict-mypy/pytest (32/32) green.

@@ -240,3 +240,15 @@ npm i -D vitest @testing-library/react @testing-library/jest-dom jsdom \
 ## 10. CI (GitHub Actions, in this repo)
 
 `lint (eslint + jsx-a11y) → typecheck → gen:api drift check → unit + a11y tests → build → docker build/publish`. E2E + full axe sweep run in `platform-outerloop`'s integration pipeline against a composed environment. **DoD:** strict typecheck clean, tests green, generated client synced to pinned contract versions.
+
+## 11. Implementation notes (as-built, P4)
+
+Added `/employees` (HR_ADMIN-gated, replacing the disabled P3 nav
+placeholder): `features/admin/CreateEmployeePage.tsx` is a form that calls a
+new `createEmployee` mutation (`api/identity.ts`), then renders a
+provisioning-status panel that polls the new `getTimeProfile`/
+`getExpenseProfile` queries (`api/time.ts`/`api/expense.ts`) every 1.5s,
+stopping each once its profile resolves — Workflow exposes no profile-read
+endpoint, so only Time and Expense are polled, matching the Scenario 5
+sequence diagram. Evidence: `hrms-web@b81a195`, ESLint/`tsc -b`/Vitest
+(8/8)/Vite build green.
