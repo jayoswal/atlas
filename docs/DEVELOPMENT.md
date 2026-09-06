@@ -84,6 +84,12 @@ httpx = "0.27.*"             # tests
 pytest = "8.*"; pytest-asyncio = "*"
 ruff = "*"; mypy = "1.*"; jsonschema = "4.*"
 ```
+
+The version examples above define the supported dependency families. The
+executable repositories additionally pin exact direct and transitive versions
+according to [`IMPLEMENTATION_PLAN.md §P0.1`](./IMPLEMENTATION_PLAN.md#p01--reproducible-dependency-baseline).
+For this application estate, committed `uv.lock`/`package-lock.json` files and
+immutable container digests are part of the source of truth.
 Frontend dependency list is in [`repos/hrms-web.md §8`](./repos/hrms-web.md#8-development-guide-how-to-build-it). Field-level schemas engineers code against: [`DATA_CONTRACTS.md`](./DATA_CONTRACTS.md). One config file + seed data: [`repos/platform-outerloop.md §2.1`](./repos/platform-outerloop.md#21-configuration--one-file-uniform-values).
 
 **Two decisions that remove the usual ambiguity (both shown as copy-paste code in [`RUNBOOK.md`](./RUNBOOK.md)):**

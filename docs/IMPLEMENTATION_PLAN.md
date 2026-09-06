@@ -11,6 +11,9 @@
 - **Coordination:** contract PR first; expand-only migrations; provider/producer
   before existing consumers; UI last. New-event consumers bind before producers.
 - **Quality gate per repo:** format/lint, strict types, unit/contract tests, build.
+- **Reproducibility gate:** application runtimes, direct dependencies, container
+  images, and CI actions are immutable/exactly pinned before feature work;
+  committed lockfiles pin transitive dependencies.
 - **Phase completion:** every exit criterion must be checked and demonstrated by
   `platform-outerloop/scripts/smoke.py`.
 - **Git identity:** `jayoswal <jayumeshoswal2001@gmail.com>` only.
@@ -55,6 +58,56 @@ endpoints return HTTP 200; Postgres contains `identity_db`, `time_db`,
 `expense_db`, and `workflow_db`. Container-startup fixes are recorded in
 `platform-outerloop@ef88b35`, `hrms-web@144e44c`, `svc-identity@cec7110`,
 `svc-time@f924307`, `svc-expense@10f19e3`, and `svc-workflow@53bbcf2`.
+
+## P0.1 — Reproducible dependency baseline
+
+**Repositories:** all six code repositories and `atlas`.
+
+This gate pins what controls application output while avoiding pins that make
+security maintenance or host portability worse.
+
+- [ ] Add an exact `.python-version` to the four services, platform tools, and
+  service template; keep `requires-python` as the compatible 3.12 constraint.
+- [ ] Add an exact `.nvmrc` to `hrms-web`; keep `engines.node` as the compatible
+  Node 20 constraint.
+- [ ] Replace direct Python wildcard/range requirements with the exact versions
+  already proven by each `uv.lock`; retain and commit `uv.lock`.
+- [ ] Replace npm caret/tilde direct requirements with exact versions already
+  proven by `package-lock.json`; retain and commit `package-lock.json`.
+- [ ] Pin every Docker/Compose image and Dockerfile base image to an immutable
+  digest, retaining a readable version tag beside the digest.
+- [ ] Pin GitHub Actions to full commit SHAs when workflows are introduced,
+  with the release version in a comment.
+- [ ] Add `docs/DEPENDENCY_BASELINE.md`: component, exact version/digest,
+  source file, update command, last verification date, and reason for any
+  exception.
+- [ ] Add a CI check that rejects mutable image tags (`latest`, major-only tags),
+  missing lockfiles, non-exact direct application dependencies, and unpinned
+  Actions.
+- [ ] Rebuild from clean caches and run every repository quality gate plus the
+  full Compose smoke test.
+
+**Intentional exceptions:**
+
+- Host-installed Git, Docker Engine, Compose, `uv`, and OS packages use
+  documented minimum-supported versions rather than package-level pins. Exact
+  tested versions are recorded in [`REPO_TRACKER.md`](./REPO_TRACKER.md), while
+  Ubuntu security updates remain installable.
+- Language compatibility declarations (`requires-python`, `engines.node`) stay
+  ranges; `.python-version`, `.nvmrc`, containers, and lockfiles provide the
+  exact reproducible selections.
+- Project SemVer, API versions, and event-schema versions describe compatibility
+  and are not dependency pins.
+- Secret/config values and generated timestamps are never treated as versions.
+
+**Update procedure:** dependency changes are deliberate PRs that update the
+manifest, lockfile/digest, baseline document, and relevant generated/template
+copies together. Dependabot/Renovate may propose updates, but never auto-merge;
+the complete quality gate and Compose smoke test must pass.
+
+**Exit criterion:** a clean Ubuntu machine resolves the same language runtimes,
+dependency graph, container image digests, and CI actions with no mutable
+application dependency inputs.
 
 ## P1 — Identity and authentication
 
