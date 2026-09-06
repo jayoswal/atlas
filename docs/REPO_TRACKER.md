@@ -9,7 +9,7 @@ siblings; `atlas` contains documentation only.
 | Repository | Purpose | Local path | GitHub remote | Git | Current phase/status |
 |---|---|---|---|---|---|
 | `atlas` | Architecture/specification center | `/home/oswa/atlas` | `https://github.com/jayoswal/atlas` (connected) | Existing | Active; plan/tracker added |
-| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0 scaffolded; compose config valid |
+| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0 complete; estate running and smoke-tested |
 | `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` | Connected/pushed | Skeleton ready; P1 pending |
 | `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | Skeleton ready; P2 pending |
 | `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | Skeleton ready; P2 pending |

@@ -43,11 +43,18 @@ reports both engine and Compose v2 versions.
 - [x] Add service-template conventions and seed/smoke entrypoints.
 - [x] Scaffold buildable FastAPI and React applications.
 - [x] Run `docker compose config`.
-- [ ] Run `docker compose up --build -d` after Docker is available.
-- [ ] Confirm Postgres, RabbitMQ, MailHog, Adminer, and gateway health.
+- [x] Run `docker compose up --build -d`.
+- [x] Confirm Postgres, RabbitMQ, MailHog, Adminer, gateway, web, and all four
+  backend services are healthy.
 
 **Exit criterion:** one command starts all infrastructure and five applications;
 the four databases exist; each local browser tool is reachable.
+
+**Completed 2026-09-06:** `seed.py` and `smoke.py` pass; all browser/API
+endpoints return HTTP 200; Postgres contains `identity_db`, `time_db`,
+`expense_db`, and `workflow_db`. Container-startup fixes are recorded in
+`platform-outerloop@ef88b35`, `hrms-web@144e44c`, `svc-identity@cec7110`,
+`svc-time@f924307`, `svc-expense@10f19e3`, and `svc-workflow@53bbcf2`.
 
 ## P1 — Identity and authentication
 
