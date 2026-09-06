@@ -1,12 +1,12 @@
 # Atlas HRMS — Repository and Path Tracker
 
 This file is the authoritative map from Atlas components to local folders and
-planned GitHub repositories. Code repositories are intentionally independent
+public GitHub repositories. Code repositories are intentionally independent
 siblings; `atlas` contains documentation only.
 
 ## Repository inventory
 
-| Repository | Purpose | Local path | Planned GitHub remote | Git | Current phase/status |
+| Repository | Purpose | Local path | GitHub remote | Git | Current phase/status |
 |---|---|---|---|---|---|
 | `atlas` | Architecture/specification center | `/home/oswa/atlas` | `https://github.com/jayoswal/atlas` (connected) | Existing | Active; plan/tracker added |
 | `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0 scaffolded; compose config valid |
@@ -50,16 +50,10 @@ name itself may differ).
 | Docker Engine | 26+ | 29.8.0; daemon and test container verified |
 | Docker Compose | v2 | v5.5.1; Atlas compose config verified |
 
-## Docker group activation
+## Docker status
 
-Docker is installed and the `oswa` account is listed in the `docker` group.
-Restart the WSL/Ubuntu login session so new terminals inherit that group:
-
-```bash
-wsl.exe --shutdown
-```
-
-Run that command from Windows PowerShell, reopen Ubuntu, then verify:
+Docker is installed, the WSL session has inherited the `docker` group, and
+daemon access works without `sudo`. Verification commands:
 
 ```bash
 docker --version

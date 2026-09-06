@@ -113,11 +113,16 @@ Plain commands — no Makefile (details in [`repos/platform-outerloop.md`](./rep
 # from platform-outerloop/compose/
 docker compose up --build -d                 # whole estate: gateway, 4 services, 1 Postgres,
                                              # RabbitMQ, MailHog, Adminer
-uv run python ../scripts/seed.py             # load demo data (idempotent)
-uv run python ../scripts/smoke.py            # cross-service smoke test
+uv run --project .. python ../scripts/seed.py # load demo data (idempotent)
+uv run --project .. python ../scripts/smoke.py # cross-service smoke test
 ```
 
-**Everything has a local UI to explore** — the app on `:8080`, plus Adminer (databases) `:8081`, RabbitMQ `:15672`, MailHog `:8025`, Traefik routing `:8080/dashboard/`. Config is one `compose/.env` file; demo logins are all `<name>@atlas.dev` / `atlas`. The same container images are the unit of deploy everywhere — that independence is the enterprise lesson; only configuration changes between local and prod.
+**Everything has a local UI to explore** — the app on `:8080`, plus Adminer
+(databases) `:8081`, RabbitMQ `:15672`, MailHog `:8025`, and the Traefik
+dashboard on `:8082/dashboard/`. Config is one `compose/.env` file; demo
+logins are all `<name>@atlas.dev` / `atlas`. The same container images are the
+unit of deploy everywhere — that independence is the enterprise lesson; only
+configuration changes between local and prod.
 
 ## 8. Glossary
 

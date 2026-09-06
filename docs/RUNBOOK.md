@@ -220,7 +220,7 @@ A service that only produces events (`svc-identity`) passes `BINDINGS = []`. Con
 `hrms-web/vite.config.ts` proxies `/api` to the gateway so the browser and the API share an origin in dev:
 
 ```ts
-server: { port: 8080, proxy: { "/api": "http://localhost:8080" } }
+server: { port: 3000, proxy: { "/api": "http://localhost:8080" } }
 ```
 
 In the composed estate the gateway already serves both the SPA and `/api`, so no proxy is needed there — the proxy is only for `npm run dev` against a running estate.

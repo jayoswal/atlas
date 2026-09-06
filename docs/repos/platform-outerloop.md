@@ -84,15 +84,15 @@ Run from `platform-outerloop/compose/`. Seed/smoke use `uv run` (this repo's `py
 docker compose up --build -d            # start / rebuild the whole estate
 docker compose down                     # stop (add -v to wipe database volumes)
 docker compose logs -f svc-time         # tail one service
-uv run python ../scripts/seed.py        # load demo data (idempotent)
-uv run python ../scripts/smoke.py       # cross-service smoke: login -> submit -> approve -> assert
+uv run --project .. python ../scripts/seed.py
+uv run --project .. python ../scripts/smoke.py
 docker compose exec postgres psql -U atlas -d identity_db   # SQL shell
 ```
 
 **Migrations** are not a separate command — each backend container runs `alembic upgrade head` in its entrypoint before starting. **UI contract regen** is `npm run gen:api` in `hrms-web`.
 
 **Acceptance:** on a clean machine with only Docker installed,
-`docker compose up --build -d` → `uv run python ../scripts/seed.py` → `uv run python ../scripts/smoke.py`
+`docker compose up --build -d` → `uv run --project .. python ../scripts/seed.py` → `uv run --project .. python ../scripts/smoke.py`
 brings up all 6 repos and passes a cross-service assertion.
 
 ### 2.3 Local dashboards (see everything — no extra stack)
@@ -105,7 +105,7 @@ The value here is *visibility with zero added infrastructure*: the tools we alre
 | **Adminer** (Postgres) | http://localhost:8081 | server `postgres` · `atlas`/`atlas` | all four databases, run SQL |
 | **RabbitMQ** | http://localhost:15672 | `atlas`/`atlas` | exchanges, queues, messages in flight |
 | **MailHog** | http://localhost:8025 | none | approval / notification emails |
-| **Traefik** | http://localhost:8080/dashboard/ | none | live routing rules |
+| **Traefik** | http://localhost:8082/dashboard/ | none | live routing rules |
 
 *(Optional, off by default: an `observability` compose profile could add Jaeger/Prometheus/Grafana for the curious — not required to run or understand Atlas. See [`../ARCHITECTURE.md §7`](../ARCHITECTURE.md#7-observability--just-enough-to-see-the-flow).)*
 
@@ -165,7 +165,7 @@ Atlas is intentionally the *left* side of every arrow. The value of the exercise
 
 ## 7. Definition of done (DevOps)
 
-- `docker compose up --build -d` → `uv run python ../scripts/seed.py` → `uv run python ../scripts/smoke.py` green on a clean machine with only Docker installed.
+- `docker compose up --build -d` → `uv run --project .. python ../scripts/seed.py` → `uv run --project .. python ../scripts/smoke.py` green on a clean machine with Docker and `uv` installed.
 - All five dashboards in §2.3 reachable; you can watch a submitted expense appear in the RabbitMQ UI and its approval email in MailHog.
 - `ci/contracts.yml` blocks a breaking contract change; `ci/integration.yml` runs the [`../SCENARIOS.md`](../SCENARIOS.md) suite.
 - One `compose/.env` is the only configuration a new developer edits.

@@ -15,18 +15,20 @@
 | Node | 20 LTS | `hrms-web` |
 | Python | 3.12 | the four services |
 | `uv` | latest | Python env + dependency manager (fast, lockfile-based) |
-| `make` | any | task entrypoints |
 | `git` | 2.40+ | — |
-| (optional) `kind` + `helm` + `kubectl` | 1.30 / 3.x | local Kubernetes path |
 
-Nothing else is installed on the host — Postgres, RabbitMQ, MailHog, Adminer all run in containers.
+`uv` installs the pinned Python 3.12 runtime when the host Python differs.
+Postgres, RabbitMQ, MailHog, and Adminer all run in containers.
 
 ## 2. Repository & workspace layout
 
-Six independent Git repositories, cloned side-by-side under one workspace directory. `platform-outerloop`'s compose file references the sibling repos by relative path:
+Six independent Git repositories are cloned side-by-side under
+`/home/oswa/atlas-repos`. The separate `/home/oswa/atlas` repository contains
+documentation only. `platform-outerloop`'s compose file references the code
+repositories by relative path:
 
 ```
-atlas/                       # workspace (not a repo; or a meta-repo of submodules)
+atlas-repos/
   hrms-web/
   svc-identity/
   svc-time/
@@ -35,15 +37,18 @@ atlas/                       # workspace (not a repo; or a meta-repo of submodul
   platform-outerloop/        # docker-compose builds ../svc-* and ../hrms-web
 ```
 
-Two supported models: (a) six standalone clones in a folder, or (b) a thin **meta-repo** with the six as **git submodules** pinned to reviewed SHAs — recommended for reproducible teaching checkpoints. Bootstrap:
+Bootstrap the existing public repositories:
 
 ```bash
-git clone <meta-repo> atlas && cd atlas && git submodule update --init --recursive
+mkdir -p /home/oswa/atlas-repos && cd /home/oswa/atlas-repos
+for repo in hrms-web svc-identity svc-time svc-expense svc-workflow platform-outerloop; do
+  git clone "https://github.com/jayoswal/${repo}.git"
+done
 cd platform-outerloop/compose
 cp .env.example .env                 # one config file, values already filled (atlas/atlas)
 docker compose up --build -d         # whole estate
-uv run python ../scripts/seed.py     # demo data
-uv run python ../scripts/smoke.py    # verify end-to-end
+uv run --project .. python ../scripts/seed.py
+uv run --project .. python ../scripts/smoke.py
 ```
 
 Then open the app at http://localhost:8080 (log in `ada@atlas.dev` / `atlas`) and the dev dashboards in [`repos/platform-outerloop.md §2.3`](./repos/platform-outerloop.md#23-local-dev-dashboards-visualize-everything--local-only).

@@ -24,8 +24,8 @@
 - [x] Install user-space Python package tooling (`pip`, `uv`).
 - [x] Install native Linux Node 20 and npm through nvm.
 - [x] Generate dependency lockfiles for all projects.
-- [x] Install/enable Docker and Compose (manual sudo step; see
-  [`REPO_TRACKER.md`](./REPO_TRACKER.md#manual-host-prerequisite)).
+- [x] Install/enable Docker and Compose; verify non-root daemon access (see
+  [`REPO_TRACKER.md`](./REPO_TRACKER.md#docker-status)).
 - [x] Create six public GitHub repositories, add `origin`, and push `main`.
 
 **Exit evidence:** `git status` works in all seven repositories; `python3`,
