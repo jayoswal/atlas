@@ -176,17 +176,39 @@ all ten running containers, and both SPA routes were verified. Evidence commits:
 **Repositories:** `platform-outerloop`, `svc-workflow`, `svc-time`,
 `svc-expense`, `hrms-web`.
 
-- [ ] Merge workflow API and decision-event contracts first.
-- [ ] Add approval, policy, employee-read, and notification migrations.
-- [ ] Consume submitted events idempotently and create approval tasks.
-- [ ] Implement approval list/decision APIs with manager ownership checks.
-- [ ] Publish decisions; consume them in time/expense to finalize state.
-- [ ] Send decision email through MailHog.
-- [ ] Add manager approvals queue and employee status badges.
-- [ ] Extend smoke test for submit → decide → finalize → email.
+- [x] Merge workflow API and decision-event contracts first.
+- [x] Add approval, policy, employee-read, and notification migrations.
+- [x] Consume submitted events idempotently and create approval tasks.
+- [x] Implement approval list/decision APIs with manager ownership checks.
+- [x] Publish decisions; consume them in time/expense to finalize state.
+- [x] Send decision email through MailHog.
+- [x] Add manager approvals queue and employee status badges.
+- [x] Extend smoke test for submit → decide → finalize → email.
 
 **Exit criterion:** a manager decision completes the event round trip and an
 email is visible in MailHog.
+
+**Completed 2026-09-13:** Workflow contracts (`workflow.v1.yaml`, decision
+event schemas), `approvals`/`policies`/`notifications`/`employee_read`
+migrations, the policy engine (`PER_RECEIPT_CAP`, `OVERTIME_THRESHOLD`),
+direct-manager routing, the approvals API, and MailHog notifications are
+implemented (see [`repos/svc-workflow.md` §8](./repos/svc-workflow.md#8-implementation-notes-as-built-p3)
+for as-built decisions, including the corrected `overtime_threshold_hours=5`
+default and the MailHog Subject-folding workaround). Time and Expense consume
+`timesheet.approved|rejected` / `expense.approved|rejected` idempotently and
+finalize state (Expense collapses `APPROVED` to `REIMBURSED`). The web app
+gained a manager Approvals queue (`/approvals`, gated on MANAGER/FINANCE) with
+inline decisions and policy-flag warnings. svc-workflow Ruff, strict mypy, and
+27 tests pass; svc-time Ruff, strict mypy, and 28 tests pass; svc-expense
+Ruff, strict mypy, and 21 tests pass; web ESLint, TypeScript, Vite build, and
+7 UI tests pass. The extended smoke test (submit timesheet/expense → route to
+manager → approve timesheet [flagged `OVERTIME_THRESHOLD`] → reject expense
+[flagged `PER_RECEIPT_CAP`] → verify decision events on RabbitMQ → verify
+Time/Expense finalize → verify a MailHog approval-request email) passed twice
+consecutively, and again after clean-cache rebuilds of `svc-workflow`,
+`svc-time`, `svc-expense`, and `hrms-web`. Evidence commits:
+`platform-outerloop@7ba12cc`, `svc-workflow@8dca804`,
+`svc-time@277be72`, `svc-expense@d2ce3c8`, and `hrms-web@d5062a5`.
 
 ## P4 — Employee event fan-out
 

@@ -88,3 +88,29 @@ Conventions + shared template: [`../DEVELOPMENT.md`](../DEVELOPMENT.md).
 7. Policy admin API. Tests to DoD; image.
 
 **Definition of done:** a submitted timesheet/expense creates one approval task and an email in MailHog; a decision publishes the correct domain event the owning service consumes; duplicate event deliveries are no-ops.
+
+## 8. Implementation notes (as-built, P3)
+
+- **No `approval_chains` table.** Routing is direct-manager-only: the approver is
+  resolved as `employee_read.manager_id` for the requester. This matches every
+  P3/P5 scenario (single-step manager approval) and avoids speculative
+  multi-step-chain complexity; a future phase can add `approval_chains` without
+  breaking the `approvals` schema if multi-step routing is ever required.
+- **`overtime_threshold_hours` default is `5`, not `40`.** `svc-time` computes
+  `overtime_hours` as hours *already in excess of* the 40-hour standard week
+  (`total_hours - 40`, floored at 0), so a 40-hour threshold on top of that
+  would almost never fire. The policy fires when `overtime_hours > 5`, i.e.
+  more than 5 hours of overtime in a week requires manager approval. There is
+  no compose env override for this — it is the `Settings` default in
+  `app/core/config.py`.
+- **MailHog Subject-header folding workaround.** Python's `EmailMessage`
+  default policy folds headers over ~78 chars; for a `Subject` like
+  `Atlas approval requested: Expense <uuid>` the fold landed after a colon and
+  MailHog's parser mis-split it into a bogus header. Fixed by building the
+  message with `email.policy.default.clone(max_line_length=998)`
+  (`app/services/mail.py`). Any future outbound email template should reuse
+  this same policy (or a shared helper) to avoid the same MailHog quirk.
+- **Downstream collapse, not a workflow concern:** `svc-expense` collapses its
+  own `APPROVED` status straight to `REIMBURSED` on finalize (no separate
+  payment step exists yet); `svc-workflow` only ever publishes `APPROVED` or
+  `REJECTED` — the collapse happens entirely in the expense consumer.
