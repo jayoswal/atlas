@@ -53,6 +53,19 @@ uv run --project .. python ../scripts/smoke.py
 
 Then open the app at http://localhost:8080 (log in `ada@atlas.dev` / `atlas`) and the dev dashboards in [`repos/platform-outerloop.md §2.3`](./repos/platform-outerloop.md#23-local-dev-dashboards-visualize-everything--local-only).
 
+> **Important — redeploy after every code change.** `docker compose` runs
+> containers built from images, not from your working tree. After editing
+> any service (including `hrms-web`), you must rebuild and recreate that
+> service's container before the change is visible/usable:
+> ```bash
+> cd /home/oswa/atlas-repos/platform-outerloop/compose
+> docker compose build <service>   # e.g. hrms-web, svc-time
+> docker compose up -d             # recreates only the services with new images
+> ```
+> A `git commit`/`git push` alone does **not** update the locally running
+> estate — the browser (or `curl http://localhost:8080/`) will keep showing
+> the old build until this is run.
+
 ## 3. Service template (all four backends share one skeleton)
 
 Backends are generated from a **`cookiecutter` service template** kept in `platform-outerloop/templates/service/` so every service is structurally identical (see [`repos/svc-identity.md` §1](./repos/svc-identity.md#1-standard-service-skeleton-shared-by-all-four-services)). The template ships, pre-wired:
