@@ -24,9 +24,9 @@
 - [x] Install user-space Python package tooling (`pip`, `uv`).
 - [x] Install native Linux Node 20 and npm through nvm.
 - [x] Generate dependency lockfiles for all projects.
-- [ ] Install/enable Docker and Compose (manual sudo step; see
+- [x] Install/enable Docker and Compose (manual sudo step; see
   [`REPO_TRACKER.md`](./REPO_TRACKER.md#manual-host-prerequisite)).
-- [ ] Add the six GitHub remotes and push (owner action after local review).
+- [x] Create six public GitHub repositories, add `origin`, and push `main`.
 
 **Exit evidence:** `git status` works in all seven repositories; `python3`,
 `python3 -m pip`, `uv`, `node`, and `npm` report expected versions; Docker
@@ -42,7 +42,7 @@ reports both engine and Compose v2 versions.
 - [x] Seed the OpenAPI/AsyncAPI contract registry.
 - [x] Add service-template conventions and seed/smoke entrypoints.
 - [x] Scaffold buildable FastAPI and React applications.
-- [ ] Run `docker compose config`.
+- [x] Run `docker compose config`.
 - [ ] Run `docker compose up --build -d` after Docker is available.
 - [ ] Confirm Postgres, RabbitMQ, MailHog, Adminer, and gateway health.
 
@@ -131,4 +131,3 @@ all six repository quality gates pass from clean checkouts.
 For each completed checkbox, record the commit/PR next to the item. At each
 phase boundary, update [`REPO_TRACKER.md`](./REPO_TRACKER.md), tag independent
 SemVer releases, and save the smoke-test output as CI evidence.
-

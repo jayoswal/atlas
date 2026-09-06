@@ -9,15 +9,15 @@ siblings; `atlas` contains documentation only.
 | Repository | Purpose | Local path | Planned GitHub remote | Git | Current phase/status |
 |---|---|---|---|---|---|
 | `atlas` | Architecture/specification center | `/home/oswa/atlas` | `https://github.com/jayoswal/atlas` (connected) | Existing | Active; plan/tracker added |
-| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` (not connected) | Initialized | P0 scaffolded; Docker validation pending |
-| `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` (not connected) | Initialized | Skeleton ready; P1 pending |
-| `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` (not connected) | Initialized | Skeleton ready; P2 pending |
-| `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` (not connected) | Initialized | Skeleton ready; P2 pending |
-| `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` (not connected) | Initialized | Skeleton ready; P3 pending |
-| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` (not connected) | Initialized | App shell ready; P1 pending |
+| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0 scaffolded; compose config valid |
+| `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` | Connected/pushed | Skeleton ready; P1 pending |
+| `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | Skeleton ready; P2 pending |
+| `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | Skeleton ready; P2 pending |
+| `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` | Connected/pushed | Skeleton ready; P3 pending |
+| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | App shell ready; P1 pending |
 
-No remote is added and no code is pushed for the six new repositories. The
-owner will create/connect each remote after reviewing the local repositories.
+All six code repositories are public, use `origin` in the `jayoswal` namespace,
+and track the pushed `main` branch.
 
 ## Workspace invariant
 
@@ -47,21 +47,19 @@ name itself may differ).
 | uv | Current | 0.12.10, `~/.local/bin/uv` |
 | Node | 20 | 20.20.2, managed by `~/.nvm` |
 | npm | Node 20 bundled | 10.8.2 |
-| Docker Engine | 26+ | **Manual installation pending** |
-| Docker Compose | v2 | **Manual installation pending** |
+| Docker Engine | 26+ | 29.8.0; daemon and test container verified |
+| Docker Compose | v2 | v5.5.1; Atlas compose config verified |
 
-## Manual host prerequisite
+## Docker group activation
 
-Docker needs root access. The automation environment cannot open a sudo
-password prompt, so run this directly in the Ubuntu/WSL terminal:
+Docker is installed and the `oswa` account is listed in the `docker` group.
+Restart the WSL/Ubuntu login session so new terminals inherit that group:
 
 ```bash
-sudo apt update
-sudo apt install -y docker.io docker-compose-v2
-sudo usermod -aG docker "$USER"
+wsl.exe --shutdown
 ```
 
-Restart the WSL/Ubuntu login session, then verify:
+Run that command from Windows PowerShell, reopen Ubuntu, then verify:
 
 ```bash
 docker --version
@@ -69,14 +67,10 @@ docker compose version
 docker run --rm hello-world
 ```
 
-Docker Desktop with WSL integration is also valid; do not install both daemon
-approaches unless intentionally managing the conflict.
-
 ## Identity and remote policy
 
 - Git author: `jayoswal <jayumeshoswal2001@gmail.com>`.
 - GitHub CLI active account: `jayoswal`.
 - Do not use another username, email, owner namespace, or commit author.
-- Do not create/add remotes or push the six new repositories until the owner
-  explicitly connects them.
-
+- All six code repositories are public and connected to their `jayoswal`
+  remotes.
