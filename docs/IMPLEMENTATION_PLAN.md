@@ -255,6 +255,35 @@ Evidence commits: `platform-outerloop@68bf951`, `svc-identity@14648e8`,
 `svc-time@2776761`, `svc-expense@77a937e`, `svc-workflow@1671a82`, and
 `hrms-web@b81a195`.
 
+## UI/UX enterprise revamp (cosmetic-only, no functional change)
+
+**Repository:** `hrms-web` — `/home/oswa/atlas-repos/hrms-web`.
+
+- [x] Enrich `theme.ts` (palette, typography scale, shadows, component
+  overrides) and add `@mui/icons-material` (exact-pinned) for iconography.
+- [x] Add shared presentational components: `PageHeader`, `StatCard`,
+  `StaticCharts` (`StaticBarChart`, `Sparkline`), `ActivityFeed`.
+- [x] Redesign `AppShell`: richer AppBar (logo, dummy search, notifications
+  menu, avatar menu with real sign-out) and a dark iconified Drawer nav,
+  grouped into "Workspace" (real items, gating unchanged) and "Organization"
+  (disabled, sample-only items — for show, not interactive).
+- [x] Add a `DashboardPage` with KPI stat cards, a static bar chart, and a
+  static activity feed. Only real data used: `useCurrentUserQuery` (Welcome
+  heading, PTO balance); all other KPI numbers are clearly-labeled sample
+  data, not backed by new API calls.
+- [x] Polish Time/Expense/Approvals headers with `PageHeader`; replace PTO
+  balance card with `StatCard`.
+- [x] Polish `LoginPage` with an enterprise split-screen branding panel
+  (sign-in form/logic unchanged).
+- [x] Polish `CreateEmployeePage` with `PageHeader` and a cosmetic `Stepper`
+  (form/provisioning logic unchanged).
+
+**Exit criterion:** purely visual/cosmetic change — no routes, gating logic,
+API calls, or feature behavior were added, removed, or altered. **Met.**
+`hrms-web` ESLint, `tsc -b`, Vitest (8/8), Vite production build, and the
+repo-wide dependency pin-policy check (`platform-outerloop/scripts/check_pins.py`)
+all pass. Evidence commit: `hrms-web@5163afc`.
+
 ## P5 — Cross-repository scenarios
 
 **Repositories:** scenario-specific sets in [`SCENARIOS.md`](./SCENARIOS.md).
