@@ -9,12 +9,12 @@ siblings; `atlas` contains documentation only.
 | Repository | Purpose | Local path | GitHub remote | Git | Current phase/status |
 |---|---|---|---|---|---|
 | `atlas` | Architecture/specification center | `/home/oswa/atlas` | `https://github.com/jayoswal/atlas` (connected) | Existing | Active; plan/tracker added |
-| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0 complete; P0.1 exact-version baseline next |
-| `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` | Connected/pushed | Skeleton ready; P1 pending |
-| `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | Skeleton ready; P2 pending |
-| `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | Skeleton ready; P2 pending |
-| `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` | Connected/pushed | Skeleton ready; P3 pending |
-| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | App shell ready; P1 pending |
+| `platform-outerloop` | Compose, gateway, contracts, seed/smoke | `/home/oswa/atlas-repos/platform-outerloop` | `https://github.com/jayoswal/platform-outerloop` | Connected/pushed | P0/P0.1 complete; P1 support next |
+| `svc-identity` | Identity, org, auth/RBAC | `/home/oswa/atlas-repos/svc-identity` | `https://github.com/jayoswal/svc-identity` | Connected/pushed | P0.1 pinned; P1 next |
+| `svc-time` | Time, attendance, PTO | `/home/oswa/atlas-repos/svc-time` | `https://github.com/jayoswal/svc-time` | Connected/pushed | P0.1 pinned; P2 pending |
+| `svc-expense` | Expense reports, FX, reimbursement | `/home/oswa/atlas-repos/svc-expense` | `https://github.com/jayoswal/svc-expense` | Connected/pushed | P0.1 pinned; P2 pending |
+| `svc-workflow` | Approvals, policy, notifications | `/home/oswa/atlas-repos/svc-workflow` | `https://github.com/jayoswal/svc-workflow` | Connected/pushed | P0.1 pinned; P3 pending |
+| `hrms-web` | React SPA | `/home/oswa/atlas-repos/hrms-web` | `https://github.com/jayoswal/hrms-web` | Connected/pushed | P0.1 pinned; P1 next |
 
 All six code repositories are public, use `origin` in the `jayoswal` namespace,
 and track the pushed `main` branch.
@@ -49,6 +49,10 @@ name itself may differ).
 | npm | Node 20 bundled | 10.8.2 |
 | Docker Engine | 26+ | 29.8.0; daemon and test container verified |
 | Docker Compose | v2 | v5.5.1; Atlas compose config verified |
+
+Exact application dependencies, runtimes, image digests, and CI action SHAs
+are recorded in [`DEPENDENCY_BASELINE.md`](./DEPENDENCY_BASELINE.md). Host
+tools above remain documented/tested versions rather than held OS packages.
 
 ## Docker status
 

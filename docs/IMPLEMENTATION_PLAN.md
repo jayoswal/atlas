@@ -66,25 +66,25 @@ endpoints return HTTP 200; Postgres contains `identity_db`, `time_db`,
 This gate pins what controls application output while avoiding pins that make
 security maintenance or host portability worse.
 
-- [ ] Add an exact `.python-version` to the four services, platform tools, and
+- [x] Add an exact `.python-version` to the four services, platform tools, and
   service template; keep `requires-python` as the compatible 3.12 constraint.
-- [ ] Add an exact `.nvmrc` to `hrms-web`; keep `engines.node` as the compatible
+- [x] Add an exact `.nvmrc` to `hrms-web`; keep `engines.node` as the compatible
   Node 20 constraint.
-- [ ] Replace direct Python wildcard/range requirements with the exact versions
+- [x] Replace direct Python wildcard/range requirements with the exact versions
   already proven by each `uv.lock`; retain and commit `uv.lock`.
-- [ ] Replace npm caret/tilde direct requirements with exact versions already
+- [x] Replace npm caret/tilde direct requirements with exact versions already
   proven by `package-lock.json`; retain and commit `package-lock.json`.
-- [ ] Pin every Docker/Compose image and Dockerfile base image to an immutable
+- [x] Pin every Docker/Compose image and Dockerfile base image to an immutable
   digest, retaining a readable version tag beside the digest.
-- [ ] Pin GitHub Actions to full commit SHAs when workflows are introduced,
+- [x] Pin GitHub Actions to full commit SHAs when workflows are introduced,
   with the release version in a comment.
-- [ ] Add `docs/DEPENDENCY_BASELINE.md`: component, exact version/digest,
+- [x] Add `docs/DEPENDENCY_BASELINE.md`: component, exact version/digest,
   source file, update command, last verification date, and reason for any
   exception.
-- [ ] Add a CI check that rejects mutable image tags (`latest`, major-only tags),
+- [x] Add a CI check that rejects mutable image tags (`latest`, major-only tags),
   missing lockfiles, non-exact direct application dependencies, and unpinned
   Actions.
-- [ ] Rebuild from clean caches and run every repository quality gate plus the
+- [x] Rebuild from clean caches and run every repository quality gate plus the
   full Compose smoke test.
 
 **Intentional exceptions:**
@@ -108,6 +108,14 @@ the complete quality gate and Compose smoke test must pass.
 **Exit criterion:** a clean Ubuntu machine resolves the same language runtimes,
 dependency graph, container image digests, and CI actions with no mutable
 application dependency inputs.
+
+**Completed 2026-09-06:** backend Ruff/mypy/pytest, frontend
+ESLint/Vitest/TypeScript/Vite, rendered-template checks, a no-cache image build,
+all ten containers, and the full seed/smoke flow pass. Cross-repository pin
+policy workflow `34035100310` passes. Evidence commits:
+`platform-outerloop@777ef77`, `hrms-web@896f05c`,
+`svc-identity@5bcc517`, `svc-time@6cca0f0`, `svc-expense@eec0ca2`, and
+`svc-workflow@6a8d9f8`.
 
 ## P1 — Identity and authentication
 

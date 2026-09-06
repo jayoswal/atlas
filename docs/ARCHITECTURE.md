@@ -239,27 +239,29 @@ Because repos deploy independently, ordering is dictated by dependency direction
 
 This ordering is the assessable skill in [`SCENARIOS.md`](./SCENARIOS.md).
 
-## 10. Technology versions (authoritative)
+## 10. Technology versions
 
 **Required stack (what you run):**
 
 | Area | Choice | Version |
 |---|---|---|
-| Frontend runtime | Node | 20 LTS |
-| Frontend framework | React / TypeScript / Vite | 18.3 / 5.4 / 5.4 |
-| Frontend state/data | Redux Toolkit + RTK Query | 2.x |
-| UI kit | MUI | 5.16 |
-| Backend language | Python | 3.12 |
-| Web framework | FastAPI | 0.115 |
-| ORM / migrations | SQLAlchemy / Alembic | 2.0 / 1.13 |
-| Broker + client | RabbitMQ / aio-pika | 3.13 / 9.x |
-| Database | PostgreSQL (one server, 4 DBs) | 16 |
-| Gateway | Traefik (routing only) | 3.x |
-| Local orchestration | Docker / docker-compose | 26 / v2 |
-| DB browser (dev UI) | Adminer | 4.x |
-| Mail (dev) | MailHog | latest |
-| CI | GitHub Actions | — |
+| Frontend runtime | Node / npm | 20.20.2 / 10.8.2 |
+| Frontend framework | React / TypeScript / Vite | 18.3.1 / 5.4.5 / 5.4.21 |
+| Frontend state/data | Redux Toolkit + RTK Query | 2.12.0 |
+| UI kit | MUI | 5.18.0 |
+| Backend language | Python | 3.12.14 |
+| Web framework | FastAPI | 0.115.14 |
+| ORM / migrations | SQLAlchemy / Alembic | 2.0.52 / 1.13.3 |
+| Broker + client | RabbitMQ / aio-pika | 3.13.7 / 9.6.2 |
+| Database | PostgreSQL (one server, 4 DBs) | 16.15 |
+| Gateway | Traefik (routing only) | 3.7.13 |
+| Local orchestration (tested host) | Docker / Docker Compose | 29.8.0 / 5.5.1 |
+| DB browser (dev UI) | Adminer | 4.17.1 |
+| Mail (dev) | MailHog | 1.0.1 |
+| CI action | actions/checkout | 7.0.1 (full SHA pinned) |
 
 **Not in the required stack (prod notes / optional):** Kubernetes + Helm, OpenTelemetry/Jaeger/Prometheus/Grafana, MinIO/S3. Docker-compose is the real, only-supported way to run Atlas. How it *would* map to Kubernetes is a short conceptual note in [`repos/platform-outerloop.md`](./repos/platform-outerloop.md), not a build deliverable.
 
-Versions are pinned identically in every per-repo spec. Changing a version is itself a cross-repo coordination exercise.
+The exact dependency and image-digest source of truth is
+[`DEPENDENCY_BASELINE.md`](./DEPENDENCY_BASELINE.md). Changing a version is
+itself a cross-repo coordination exercise.
